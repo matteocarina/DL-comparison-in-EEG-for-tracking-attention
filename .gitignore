@@ -1,0 +1,24 @@
+# data and intermediate results: large and regenerable
+eeg_data_local/
+experiments/
+
+# generated figures: the five the README embeds are published, the rest are not
+figures/*
+!figures/fig1_two_representations.png
+!figures/fig2_label_modalities.png
+!figures/fig3_feature_selection_event_locked.png
+!figures/fig5_pred_vs_true.png
+!figures/fig6_results_forest.png
+!figures/results_table.csv
+!figures/results_table.md
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# editors / os
+.idea/
+.vscode/
+.DS_Store
