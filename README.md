@@ -13,8 +13,8 @@ finds that the smallest of them wins. A 117k-parameter temporal convolutional ne
 ## The problem
 
 Twenty-seven people drove a simulator for about 90 minutes each. Every so often the car drifted out of
-its lane, and they steered it back. How long they took to react — a few hundred milliseconds when
-alert, several seconds when drowsy — is the thing to predict. Ten electrodes on the scalp recorded
+its lane, and they steered it back. How long they took to react, a few hundred milliseconds when
+alert, several seconds when drowsy, is the thing to predict. Ten electrodes on the scalp recorded
 brain activity throughout.
 
 This is harder than it sounds, for three reasons.
@@ -29,7 +29,7 @@ second. A model has to hold a long context to predict a brief event.
 preprocessing step that peeks ahead inflates the score without being deployable. 
 
 It is hard enough that most driver-monitoring work avoids it. The common framing is
-*detection* — classify a driver as drowsy or alert — which sidesteps the harder question of
+*detection* (classify a driver as drowsy or alert) which sidesteps the harder question of
 predicting **how slow** the next response will be which would be crucial for a stimulating device. 
 Predicting a continuous reaction time is the version attempted here, and published results show why it
 is avoided: a 2025 paper on this exact dataset reports correlations of 0.21–0.26 between predicted and
@@ -75,7 +75,7 @@ subjects, since only those have enough recordings to be tested under the enrolle
 
 ![Every configuration, mean and spread](figures/fig6_results_forest.png)
 
-*The dot is the mean across drives; the bar spans ±1 standard deviation — not a confidence interval,
+*The dot is the mean across drives; the bar spans ±1 standard deviation, not a confidence interval,
 which describes how precisely the mean is known rather than how much performance actually varies.
 Full numbers including MAE and parameter counts are in `figures/results_table.csv`.*
 
@@ -84,7 +84,7 @@ the parameters, and the gap survives a paired subject-by-subject test. The heavi
 architecture was not needed.
 
 **Temporal context is the largest single effect.** Stripping the temporal half out of the graph
-model — predicting from one four-second window instead of a sequence — costs **0.18 to 0.24**.
+model so predicting from one four-second window instead of a sequence, costs **0.18 to 0.24**.
 Nothing else in the study comes close. Reaction time is a slow state, not an instantaneous readout.
 
 **Fewer features beat more.** Fifteen greedily selected features beat all 51 in three of the four
@@ -103,13 +103,13 @@ labelling three times as many moments.*
 **A control that sees no EEG scores about zero**, confirming the models read brain activity rather
 than "drivers get worse as the hour wears on".
 
-On enrolled drivers the MLP-TCN leads. On unseen drivers it and the GNN-LSTM are level — 0.424 and
-0.434, well inside the noise but the TCN reaches that with a third of the parameters.
+On enrolled drivers the MLP-TCN leads. On unseen drivers it and the GNN-LSTM are level (0.424 and
+0.434), well inside the noise but the TCN reaches that with a third of the parameters.
 
 ### But the spread dwarfs the differences
 
 Standard deviations run 0.12–0.35, wider than any gap between models. For the headline
-configuration, 65% of drives fall within ±1 SD of the mean and 95% within ±2 — close to normal, so
+configuration, 65% of drives fall within ±1 SD of the mean and 95% within ±2, close to normal, so
 the SD is a fair summary rather than an artefact of outliers. Across the 95 drives:
 
 | | share of drives |
@@ -160,7 +160,7 @@ On the same protocol, with **a third of the electrodes**, the event-locked model
 their reported range and the continuous-target model is well above it.
 
 That said, the same caution applies to their numbers as to these. They report standard deviations of
-0.10–0.19 around correlations of 0.21–0.26 — spreads as large as the means themselves — and this
+0.10–0.19 around correlations of 0.21–0.26, spreads as large as the means themselves, and this
 work's spreads are wider still, at 0.12–0.35. Both sets of results describe a task where the
 variation between drivers and drives is larger than any difference between methods. The comparison
 above is worth making, but nobody should read it as one approach cleanly solving something the other
@@ -178,7 +178,7 @@ did not.
   0.016.
 
 The normalisation statistics are frozen after each drive's first five minutes; letting them keep 
-updating — still using only past data, so still deployable — was tested across five seeds:
+updating, still using only past data, so still deployable, was tested across five seeds:
 
 | | per-session r | pooled r | MAE |
 |---|---|---|---|
@@ -197,7 +197,7 @@ A model that scores well for the wrong reason is worse than one that scores badl
 exist to prevent that.
 
 **Nothing sees the future.** Normalisation statistics come from each drive's first five minutes and
-are then frozen — the same thing a deployed monitor could do. An earlier version computed them over
+are then frozen, the same thing a deployed monitor could do. An earlier version computed them over
 the whole recording, which let every moment's scaling depend on data recorded later.
 
 **Confidence intervals resample subjects, not recordings.** Ninety-five drives from nineteen people
@@ -230,7 +230,7 @@ python 5_make_figures.py                  # explanatory figures
 **1 · Preprocessing.** A 0.5 Hz high-pass, then a common-average reference computed over the **ten
 deployable electrodes. The signal is cut into 4 s epochs every 3.5 s. Each epoch yields 51 engineered
 features, two 10×10 connectivity matrices (theta and alpha), and the waveform decimated to 250 Hz. 
-Normalisation statistics come from the first 86 epochs — five minutes — and are then frozen.
+Normalisation statistics come from the first 86 epochs (five minutes) and are then frozen.
 
 **2 · Labels.** Two supervision signals derived from the same reaction times. `event_locked` puts
 each trial's log₁₀ reaction time on the last epoch ending before the lane departure, labelling
@@ -239,7 +239,7 @@ kernel, labelling **97%**. That density gap is most of why the two behave so dif
 smoothed target gives the network roughly three times as much to learn from, at the cost of being
 built with a symmetric kernel and therefore not causal.
 
-**3 · Models.** `3a_model_gnn_lstm.py` holds the two graph variants — `GNN` reads a single epoch's
+**3 · Models.** `3a_model_gnn_lstm.py` holds the two graph variants, `GNN` reads a single epoch's
 connectivity graph, `GNN_LSTM` adds the temporal half. `3b_model_tcn.py` holds the two TCN variants,
 which share one causal convolutional stack and differ only in the per-epoch encoder: an MLP over
 engineered features, or a 1-D CNN over the raw waveform. `run_matrix.py` runs each of the twenty
