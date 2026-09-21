@@ -1,7 +1,7 @@
 
 # Predicting how fast a driver will react, from their brain activity
 
-**Could a simple 10 electrodes EEG headset predict/track a driver's reaction time before lane deviations? **
+**Could a simple 10 electrodes EEG headset predict/track a driver's reaction time before lane deviations?**
 
 This project answers that with three neural network architectures on a public driving dataset, and
 finds that the smallest of them wins. A 117k-parameter temporal convolutional network outperforms a
